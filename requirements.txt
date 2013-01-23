@@ -1,0 +1,4 @@
+disco==0.4.4
+Cython==0.17.2
+pillow==1.7.8
+
