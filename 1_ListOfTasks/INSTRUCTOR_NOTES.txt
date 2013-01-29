@@ -1,0 +1,9 @@
+
+1_mandelbrot_serial
+Confirm we have a 2D plot first (SHOW_IN_3D = False)
+Run using:
+$ python serial_python.py
+
+Switch to 3D plot and run using a smaller grid e.g.
+$ python serial_python 100 100
+
