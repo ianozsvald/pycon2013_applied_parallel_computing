@@ -1,74 +1,19 @@
 """Doesn't dereference on each iteration, goes faster!"""
-import sys
+import argparse
 import datetime
-import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib.colors as colors
-from mpl_toolkits.mplot3d import Axes3D  # necessary magic import for 3D support
+import plotting
+
+# Usage:
+# $ python serial_python.py -s 300 -m 100 --plot3D
+# by default it will use a size of 1000, max iterations 1000, 2D plotting
+# we can use a size of 300 and max iterations 100 to iteratively test new code
+# note that a 3D plot is quite slow
 
 # area of space to investigate
 x1, x2, y1, y2 = -2.13, 0.77, -1.3, 1.3
 
 # plot in 2D for a fast output or 3D for a slower but prettier output
 SHOW_IN_3D = False
-
-
-def show_2D(output):
-    """Plot quickly in 2D"""
-    width = np.sqrt(len(output))
-    Z = np.array(output).reshape((width, width))
-    fig = plt.figure()
-    fig.suptitle("Mandelbrot")
-
-    # setup a colormap that emphasises the detail of a 1000 iteration
-    # calculation
-    scale = ((0.0, 0.0, 0.0),
-             (0.01, 0.3, 0.3),
-             (0.1, 0.9, 0.9),
-             (1.0, 1.0, 1.0))
-    cdict = {'red': scale, 'green': scale, 'blue': scale}
-    my_cmap = colors.LinearSegmentedColormap('my_colormap', cdict, 256)
-    # plot our matrix using the new colormap
-    plt.imshow(Z, cmap=my_cmap, interpolation='nearest')
-    plt.show()
-
-
-#def show_2D_PIL(output):
-    #"""Convert list to numpy array, show using PIL"""
-    #try:
-        #import Image
-        ## convert our output to PIL-compatible input
-        #import array
-        ## scale the output to a 0..255 range for plotting
-        #max_val = max(output)
-        #output = [int(float(o) / max_val * 255) for o in output]
-        #output = ((o + (256 * o) + (256 ** 2) * o) * 8 for o in output)
-        #output = array.array('I', output)
-        ## display with PIL
-        #im = Image.new("RGB", (w / 2, h / 2))
-        #im.fromstring(output.tostring(), "raw", "RGBX", 0, -1)
-        #im.show()
-    #except ImportError as err:
-        ## Bail gracefully if we don't have PIL
-        #print "Couldn't import Image:", str(err)
-
-
-def show_3D(output):
-    """Show using matplotlib as 3D surface plot"""
-    width = np.sqrt(len(output))
-    Z = np.array(output).reshape((width, width))
-    fig = plt.figure()
-    fig.suptitle("Mandelbrot")
-
-    """Plot far more slowly in 3D"""
-    assert Axes3D.name == "3d"  # dummy test so pylint knows that Axes3D has usage
-    Xr = np.arange(width)
-    Yr = np.arange(width)
-    X, Y = np.meshgrid(Xr, Yr)
-    ax = fig.add_subplot(1, 1, 1, projection='3d')
-    cmap = 'jet'
-    ax.plot_surface(X, Y, Z, rstride=1, cstride=1, cmap=cmap, linewidth=0, antialiased=True, shade=True)
-    plt.show()
 
 
 def calculate_z(q, maxiter):
@@ -126,9 +71,9 @@ def calc_pure_python(show_output):
 
     if show_output:
         if SHOW_IN_3D:
-            show_3D(output)
+            plotting.show_3D(output)
         else:
-            show_2D(output)
+            plotting.show_2D(output)
 
     return validation_sum
 
@@ -136,13 +81,17 @@ def calc_pure_python(show_output):
 if __name__ == "__main__":
     # get width, height and max iterations from cmd line
     # 'python serial_python.py 1000 1000'
-    if len(sys.argv) == 1:
-        w = h = 1000
-        maxiter = 1000
-    else:
-        w = int(sys.argv[1])
-        h = int(sys.argv[1])
-        maxiter = int(sys.argv[2])
+    parser = argparse.ArgumentParser(description='Project description')
+    parser.add_argument('--size', '-s', type=int, help='Range for our width and height (e.g. 1000)', default=1000)
+    parser.add_argument('--maxiterations', '-m', type=int, help='Maximum number of iterations (e.g. 1000)', default=1000)
+    parser.add_argument('--plot3D', action="store_true", help='Plot in 3D (default is 2D)', default=False)
+    args = parser.parse_args()
+    print args
+    w = h = args.size
+    maxiter = args.maxiterations
+    if args.plot3D:
+        SHOW_IN_3D = True
+    print "Using a width and height of {} and a maximum of {} iterations".format(w, maxiter)
 
     # we can show_output for Python, not for PyPy
     validation_sum = calc_pure_python(True)
