@@ -64,7 +64,7 @@ def calc_pure_python(show_output):
 
     # split work list into continguous chunks, one per CPU
     # build this into chunks which we'll apply to map_async
-    nbr_chunks = 128  # experiment with different nbrs of chunks
+    nbr_chunks = 1  # experiment with different nbrs of chunks
     #nbr_chunks = multiprocessing.cpu_count()
     print "Multiprocessing using {} CPUs".format(nbr_chunks)
     chunk_size = len(q) / nbr_chunks

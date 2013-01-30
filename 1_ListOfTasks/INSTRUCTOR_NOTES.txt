@@ -7,3 +7,7 @@ $ python serial_python.py
 Switch to 3D plot and run using a smaller grid e.g.
 $ python serial_python.py -s 300 -m 100 --plot3D
 
+2_mandelbrot_multiprocessing
+$ python multiproc.py
+confirm it runs using num_chunks=1, then increase nbr of chunks
+
