@@ -61,6 +61,13 @@ except ImportError as err:
     print "You are missing 'matplotlib', install it via http://matplotlib.org/downloads.html or 'pip install matplotlib'"
     libraries_missing_or_wrong_version = True
 
+try:
+    import disco
+except ImportError as err:
+    print "You are missing 'disco', install it using the instructions in the README.md file in this directory"
+    libraries_missing_or_wrong_version = True
+
+
 if libraries_missing_or_wrong_version:
     print "NOTE you've been issued with some warnings or errors, you ought to fix these before running the code in this tutorial"
 else:

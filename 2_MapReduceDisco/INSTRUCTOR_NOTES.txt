@@ -1,0 +1,26 @@
+This assumes that we have a working Disco installation. It'll process tweets from tweet_data, applying a simple word count.
+
+Files:
+tweet_data/tweets_357.json  # 357 tweets from one user - tiny dataset
+tweet_data/tweets_859157.json  # 859157 tweets - 2 minute dataset
+
+In this directory run:
+$ python count_tweet_words.py
+and it'll start by loading tweets_357.json (line 34).
+
+This will produce mapreduceout_wordcount.json.
+
+Do:
+$ cd word_count
+and then we'll run:
+word_count_cloud $ python plot_from_mapreduce.py ../mapreduceout_wordcount.json
+
+To produce a graphical output you'll need the dependencies mentioned here:
+https://github.com/amueller/word_cloud
+which include cython, PIL (I used Pillow as it is more cross-platform), numpy, scikit-learn
+
+This should give you a graphic onscreen and an output.png saved in this directory.
+
+If the above works then you could edit count_tweet_words.py on line 34 to use the larger json file, it'll take about 2 minutes on a single machine.
+
+

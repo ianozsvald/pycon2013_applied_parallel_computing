@@ -1,0 +1,173 @@
+These are *rough notes* that Ian is including in case you are running *without* our VirtualBox. Our VirtualBox for PyCon 2013 has disco pre-installed (so you won't need the following notes). We *can't help you* if you're not using our VirtualBox image I'm afraid (you'll have to pair with someone if you have problems).
+
+Using:
+https://groups.google.com/forum/?fromgroups=#!topic/disco-dev/hGihm-R4MAw
+http://discoproject.org/doc/disco/start/install.html#configauth
+
+sudo apt-get install erlang-base (not erlang-base-hipe)
+sudo apt-get install erlang (this depends on erlang-base OR erlange-base-hipe so do it after installing erlang-base)
+git clone git://github.com/discoproject/disco.git DISCO_HOME
+cd DISCO_HOME
+make
+NOTE we don't want a 'make install' as we're not making this installation global (it requires more fiddling with config)
+
+Export the DISCO_HOME dir as the current working dir, for me:
+export DISCO_HOME=/home/ian/workspace/pycon2013_working/DISCO_HOME
+and we can confirm this:
+ian@ian-Latitude-E6420 ~/workspace/pycon2013_working/DISCO_HOME $ echo $DISCO_HOME
+/home/ian/workspace/pycon2013_working/DISCO_HOME
+ian@ian-Latitude-E6420 ~/workspace/pycon2013_working/DISCO_HOME $ ls
+AUTHORS  bin  conf  contrib  doc  erl_crash.dump  examples  ext  lib  LICENSE  make-discoproject-debian  Makefile  master  pkg  README.rst  root  tests  util
+
+Extract list of Disco config settings
+bin/disco -v
+
+Confirm that we can ssh into our own machine:
+$ ssh localhost
+Welcome to Linux Mint 13 Maya (GNU/Linux 3.2.0-23-generic x86_64)
+...
+exit # go back to root machine
+ - if this fails then see Troubleshooting (install openssh-server, setup permissions)
+
+Now to run disco - you should see this:
+$ pwd # /home/ian/workspace/pycon2013_working/DISCO_HOME
+$ bin/disco nodaemon
+Erlang R14B04 (erts-5.8.5) [source] [64-bit] [smp:8:8] [rq:8] [async-threads:0] [kernel-poll:true]
+
+Eshell V5.8.5  (abort with ^G)
+(disco_8989_master@ian-Latitude-E6420)1> 17:41:09.910 [info] Application lager started on node 'disco_8989_master@ian-Latitude-E6420'
+17:41:09.911 [info] DISCO BOOTS
+17:41:09.912 [info] Disco proxy disabled
+17:41:09.913 [info] DDFS master starts
+17:41:09.914 [info] Event server starts
+17:41:09.916 [info] Disco config starts
+17:41:09.917 [info] DISCO SERVER STARTS
+17:41:09.918 [info] Fair scheduler starts
+17:41:09.918 [info] Scheduler uses fair policy
+17:41:09.918 [info] Fair scheduler: Fair policy
+17:41:09.920 [info] Config table updated
+17:41:09.924 [info] Starting node "disco_8989_slave" on "localhost" ("localhost")
+17:41:09.924 [info] web server (mochiweb) starts
+17:41:09.925 [info] Application disco started on node 'disco_8989_master@ian-Latitude-E6420'
+17:41:10.184 [info] ddfs_node initialized on 'disco_8989_master@ian-Latitude-E6420' with volumes: ["vol0"]
+17:41:10.184 [info] ddfs_node initialized on disco_8989_slave@localhost with volumes: ["vol0"]
+17:41:10.185 [info] ddfs_node starts on 'disco_8989_master@ian-Latitude-E6420'
+17:41:10.185 [info] Node started at disco_8989_slave@localhost (reporting as 'disco_8989_master@ian-Latitude-E6420') on "localhost"
+17:41:10.189 [info] Tempgc: error listing "/home/ian/workspace/pycon2013_working/DISCO_HOME/root/data/localhost": {error,enoent}
+17:41:10.189 [info] Tempgc: one pass completed on disco_8989_slave@localhost
+17:41:10.190 [info] Started ddfs_put at disco_8989_slave@localhost on port 8990
+17:41:10.190 [info] Node started at disco_8989_slave@localhost (reporting as disco_8989_slave@localhost) on "localhost"
+17:41:10.191 [info] ddfs_node starts on disco_8989_slave@localhost
+
+If you get the above output then Disco is running, visit
+http://localhost:8989/
+and you'll have a "Disco status" screen showing how much disk is available and some 0s. Click on "Configure" on the right and you'll see that this machine allows 1 max worker, we can change this shortly.
+
+Now we'll test a map/reduce job, open a *new* terminal, export DISCO_HOME again, then run:
+$ python examples/util/count_words.py
+and you should see something like:
+Job@54e:32ff:4434b:
+Status: [map] 0 waiting, 1 running, 0 done, 0 failed
+2013/01/12 17:50:55 master     New job initialized!
+2013/01/12 17:50:55 master     Starting job
+2013/01/12 17:50:55 master     Starting map phase
+2013/01/12 17:50:55 master     map:0 assigned to localhost
+2013/01/12 17:50:57 localhost  MSG: [map:0] Done: 9732 entries mapped
+2013/01/12 17:50:57 localhost  MSG: [map:0] Results sent to master
+2013/01/12 17:50:57 localhost  DONE: [map:0] Task finished in 0:00:02.463
+2013/01/12 17:50:57 master     SYS: [map:0] Received results from localhost
+2013/01/12 17:50:57 master     Starting shuffle phase
+2013/01/12 17:50:57 master     Finished shuffle phase in 0:00:00.005
+2013/01/12 17:50:57 master     Finished map phase in 0:00:02.479
+2013/01/12 17:50:57 master     Starting reduce phase
+2013/01/12 17:50:57 master     reduce:0 assigned to localhost
+2013/01/12 17:50:57 localhost  MSG: [reduce:0] Done: 70143 entries reduced
+2013/01/12 17:50:58 localhost  MSG: [reduce:0] Results sent to master
+2013/01/12 17:50:58 localhost  DONE: [reduce:0] Task finished in 0:00:00.306
+2013/01/12 17:50:58 master     SYS: [reduce:0] Received results from localhost
+2013/01/12 17:50:58 master     Starting shuffle phase
+2013/01/12 17:50:58 master     Finished shuffle phase in 0:00:00.000
+2013/01/12 17:50:58 master     Finished reduce phase in 0:00:00.314
+2013/01/12 17:50:58 master      READY: Job finished in 0:00:02.793
+ Status: [reduce] 0 waiting, 0 running, 1 done, 0 failed
+('"A', 2)
+('"A.', 1)
+('"And', 1)
+('"Anya,', 1)
+('"Before', 1)
+('"Bobby,', 1)
+...
+('zere.', 1)
+('zwei,', 3)
+('\xa330.],', 1)
+('\xe0', 1)
+('\xeates', 1)
+and it should take under a minute. The order of the word counts might vary (don't worry about that). Check back in the web interface and you'll have a new job in the right sidebar, click it and you'll see some job stats.
+
+If you were to Ctrl-C on the "bin/disco nodaemon" terminal, then restart disco, you'd find that the jobs list in the web browser is empty. The results are still cached on the disk, they're just gone from the management interface.
+
+Preparing the final disk image:
+==============================
+The easy way to remove all cached files (in preparation for making the disk image public) will be to:
+DISCO_HOME $ mv root root_orig # in preparation for deleting the root_orig folder in a moment
+$ make # make forces 'root' and subdirs to be recreated
+$ bin/disco nodaemon # test it still runs
+assuming disco still runs, delete root_orig as it contains unhelpful testing data.
+
+
+Troubleshooting:
+===============
+
+General debug help:
+http://discoproject.org/doc/disco/start/troubleshoot.html#troubleshooting
+
+Is the process already running (maybe more than one? maybe already as root if you did 'sudo make install' by accident?)?
+ps aux | grep beam.*disco
+should show no processes (kill them if they exist)
+
+Is DISCO_HOME configured? If you see this
+disco.error.DiscoError: DISCO_HOME is not specified, where should Disco live?
+then export DISCO_HOME as mentioned above
+
+Is openssh-server installed? We need to be able to ssh into ourself:
+$ ssh localhost
+if this fails with:
+ssh: connect to host localhost port 22: Connection refused
+then install openssh-server, if it needs a password then setup authorized_keys
+http://discoproject.org/doc/disco/start/install.html#configure-authentication
+
+Bad installation? I had trouble several times with incomplete installs, if you get this:
+DISCO_HOME $ bin/disco nodaemon
+Erlang R14B04 (erts-5.8.5) [source] [64-bit] [smp:8:8] [rq:8] [async-threads:0] [kernel-poll:true]
+
+Eshell V5.8.5  (abort with ^G)
+(disco_8989_master@ian-Latitude-E6420)1>  
+BREAK: (a)bort (c)ontinue (p)roc info (i)nfo (l)oaded
+       (v)ersion (k)ill (D)b-tables (d)istribution
+and then no more output then your install is probably bad. I simple did 'make' again in the DISCO_HOME directory and it seemed to build some more stuff, then 'bin/disco nodameon' worked correctly as shown above. If you look in
+DISCO_HOME $ ls root/log
+and see no files then you definitely have the same problem that I had (so do 'make' again).
+
+Once I got into a really weird problem where a Linux system update had occurred and then disco wouldn't work afterwards, it had really odd error messages from Erlang. A machine reboot solved this problem (I ran the Linux system updates whilst working because they didn't look dangerous!).
+
+
+
+This is the disco output if an SSH Server isn't running:
+$ bin/disco nodaemon
+Erlang R14B04 (erts-5.8.5) [source] [64-bit] [smp:8:8] [rq:8] [async-threads:0] [kernel-poll:true]
+Eshell V5.8.5  (abort with ^G)
+(disco_8989_master@ian-Latitude-E6420)1> 18:27:32.739 [info] Application lager started on node 'disco_8989_master@ian-Latitude-E6420'
+18:27:32.739 [info] DISCO BOOTS
+18:27:32.740 [info] Disco proxy disabled
+18:27:32.741 [info] DDFS master starts
+18:27:32.742 [info] Event server starts
+18:27:32.744 [info] Disco config starts
+18:27:32.745 [info] DISCO SERVER STARTS
+18:27:32.746 [info] Fair scheduler starts
+18:27:32.746 [info] Scheduler uses fair policy
+18:27:32.746 [info] Fair scheduler: Fair policy
+18:27:32.748 [info] Config table updated
+18:27:32.752 [info] Starting node "disco_8989_slave" on "localhost" ("localhost")
+18:27:32.752 [info] web server (mochiweb) starts
+18:27:32.753 [info] Application disco started on node 'disco_8989_master@ian-Latitude-E6420'
+ssh: connect to host localhost port 22: Connection refused
