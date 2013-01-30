@@ -29,4 +29,6 @@ Disco needs to be checked out of the github repository, use this specific check-
     Now read the DISCO_INSTALL_NOTES.txt in 2_MapReduceDisco and hope you get it working (we won't provide support if you can't)
 
 Confirm that you have all the required libraries:
+
     $ python run_this_to_confirm_you_have_the_correct_libraries.py
+
