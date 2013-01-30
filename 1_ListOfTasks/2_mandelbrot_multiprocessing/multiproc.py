@@ -78,20 +78,9 @@ def calc_pure_python(show_output):
     chunks = [(q[x * chunk_size:(x + 1) * chunk_size], maxiter) for x in xrange(nbr_chunks)]
     print chunk_size, len(chunks), len(chunks[0][0])
 
-    # create a Pool which will create Python processes
-    p = multiprocessing.Pool()
-    start_time = datetime.datetime.now()
-    # send out the work chunks to the Pool
-    # po is a multiprocessing.pool.MapResult
-    po = p.map_async(calculate_z, chunks)
-    # we get a list of lists back, one per chunk, so we have to
-    # flatten them back together
-    # po.get() will block until results are ready and then
-    # return a list of lists of results
-    results = po.get()  # [[ints...], [ints...], []]
-    output = []
-    for res in results:
-        output += res
+    # STUDENTS TO SOLVE THIS SECTION
+    # HERE
+
     end_time = datetime.datetime.now()
     secs = end_time - start_time
 

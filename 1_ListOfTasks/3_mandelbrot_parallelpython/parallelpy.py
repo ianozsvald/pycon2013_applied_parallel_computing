@@ -80,27 +80,8 @@ def calc_pure_python(show_output):
 
     start_time = datetime.datetime.now()
 
-    # create a Pool which will create Python processes
-    # tuple of all parallel python servers to connect with
-    ppservers = ()  # use this machine
-    # I can't get autodiscover to work at home
-    #ppservers=("*",) # autodiscover on network
-
-    job_server = pp.Server(ppservers=ppservers)
-    # it'll autodiscover the nbr of cpus it can use if first arg not specified
-
-    print "Starting pp with", job_server.get_ncpus(), "local CPU workers"
-    output = []
-    jobs = []
-    for chunk in chunks:
-        print "Submitting job with len(q) {}".format(len(chunk[0]))
-        job = job_server.submit(calculate_z, (chunk,), (), ())
-        jobs.append(job)
-    for job in jobs:
-        output_job = job()
-        output += output_job
-    # print statistics about the run
-    print job_server.print_stats()
+    # STUDENTS TO SOLVE THIS SECTION
+    # HERE
 
     end_time = datetime.datetime.now()
     secs = end_time - start_time

@@ -11,3 +11,12 @@ $ python serial_python.py -s 300 -m 100 --plot3D
 $ python multiproc.py
 confirm it runs using num_chunks=1, then increase nbr of chunks
 
+3_mandelbrot_parallelpython
+$ python parallelpy.py
+confirm it runs using num_chunks=1, then increase
+
+$ python parallelpy_manymachines.py
+and in another terminal run:
+$ ppserver.py -d -a
+so we have autodiscovery enabled
+

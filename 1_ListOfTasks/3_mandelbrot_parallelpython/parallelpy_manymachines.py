@@ -80,31 +80,8 @@ def calc_pure_python(show_output):
 
     start_time = datetime.datetime.now()
 
-    # tuple of all parallel python servers to connect with
-    # for localhost with 0 LOCAL_CPUS run 'ppserver.py -d -a' in another terminal
-
-    # create a Pool which will create Python processes
-    # tuple of all parallel python servers to connect with
-    ppservers = ("*",)  # autodiscover on network
-    NBR_LOCAL_CPUS = 0  # if 0, it sends jobs out to other ppservers
-    # use 'ifconfig' on linux/mac to get IP addresses
-    #ppservers = ('192.168.0.2',) # use this machine
-
-    job_server = pp.Server(NBR_LOCAL_CPUS, ppservers=ppservers)
-    # it'll autodiscover the nbr of cpus it can use if first arg not specified
-
-    print "Starting pp with", job_server.get_ncpus(), "local CPU workers"
-    output = []
-    jobs = []
-    for chunk in chunks:
-        print "Submitting job with len(q) {}".format(len(chunk[0]))
-        job = job_server.submit(calculate_z, (chunk,), (), ())
-        jobs.append(job)
-    for job in jobs:
-        output_job = job()
-        output += output_job
-    # print statistics about the run
-    print job_server.print_stats()
+    # STUDENTS TO SOLVE THIS SECTION
+    # HERE
 
     end_time = datetime.datetime.now()
     secs = end_time - start_time
