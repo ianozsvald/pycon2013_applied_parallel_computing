@@ -3,6 +3,7 @@ import sys
 import datetime
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.colors as colors
 from mpl_toolkits.mplot3d import Axes3D  # necessary magic import for 3D support
 
 # area of space to investigate
@@ -12,13 +13,53 @@ x1, x2, y1, y2 = -2.13, 0.77, -1.3, 1.3
 SHOW_IN_3D = False
 
 
-def show_2D(Z, width, fig):
+def show_2D(output):
     """Plot quickly in 2D"""
-    img = plt.imshow(Z, cmap='hot', interpolation='nearest')
-    return img
+    width = np.sqrt(len(output))
+    Z = np.array(output).reshape((width, width))
+    fig = plt.figure()
+    fig.suptitle("Mandelbrot")
+
+    # setup a colormap that emphasises the detail of a 1000 iteration
+    # calculation
+    scale = ((0.0, 0.0, 0.0),
+             (0.01, 0.3, 0.3),
+             (0.1, 0.9, 0.9),
+             (1.0, 1.0, 1.0))
+    cdict = {'red': scale, 'green': scale, 'blue': scale}
+    my_cmap = colors.LinearSegmentedColormap('my_colormap', cdict, 256)
+    # plot our matrix using the new colormap
+    plt.imshow(Z, cmap=my_cmap, interpolation='nearest')
+    plt.show()
 
 
-def show_3D(Z, width, fig):
+#def show_2D_PIL(output):
+    #"""Convert list to numpy array, show using PIL"""
+    #try:
+        #import Image
+        ## convert our output to PIL-compatible input
+        #import array
+        ## scale the output to a 0..255 range for plotting
+        #max_val = max(output)
+        #output = [int(float(o) / max_val * 255) for o in output]
+        #output = ((o + (256 * o) + (256 ** 2) * o) * 8 for o in output)
+        #output = array.array('I', output)
+        ## display with PIL
+        #im = Image.new("RGB", (w / 2, h / 2))
+        #im.fromstring(output.tostring(), "raw", "RGBX", 0, -1)
+        #im.show()
+    #except ImportError as err:
+        ## Bail gracefully if we don't have PIL
+        #print "Couldn't import Image:", str(err)
+
+
+def show_3D(output):
+    """Show using matplotlib as 3D surface plot"""
+    width = np.sqrt(len(output))
+    Z = np.array(output).reshape((width, width))
+    fig = plt.figure()
+    fig.suptitle("Mandelbrot")
+
     """Plot far more slowly in 3D"""
     assert Axes3D.name == "3d"  # dummy test so pylint knows that Axes3D has usage
     Xr = np.arange(width)
@@ -26,22 +67,7 @@ def show_3D(Z, width, fig):
     X, Y = np.meshgrid(Xr, Yr)
     ax = fig.add_subplot(1, 1, 1, projection='3d')
     cmap = 'jet'
-    surf = ax.plot_surface(X, Y, Z, rstride=1, cstride=1, cmap=cmap, linewidth=0, antialiased=True, shade=True)
-    return surf
-
-
-def show(output):
-    """Show using matplotlib"""
-    width = np.sqrt(len(output))
-    Z = np.array(output).reshape((width, width))
-    fig = plt.figure()
-    fig.suptitle("Mandelbrot")
-
-    if SHOW_IN_3D:
-        show_3D(Z, width, fig)
-    else:
-        show_2D(Z, width, fig)
-
+    ax.plot_surface(X, Y, Z, rstride=1, cstride=1, cmap=cmap, linewidth=0, antialiased=True, shade=True)
     plt.show()
 
 
@@ -99,7 +125,10 @@ def calc_pure_python(show_output):
     print "Total sum of elements (for validation):", validation_sum
 
     if show_output:
-        show(output)
+        if SHOW_IN_3D:
+            show_3D(output)
+        else:
+            show_2D(output)
 
     return validation_sum
 
