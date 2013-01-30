@@ -64,7 +64,7 @@ def calc_pure_python(show_output):
 
     # split work list into continguous chunks, one per CPU
     # build this into chunks which we'll apply to map_async
-    nbr_chunks = 128  # experiment with different nbrs of chunks
+    nbr_chunks = 1  # experiment with different nbrs of chunks
     #nbr_chunks = multiprocessing.cpu_count()
     print "ParallelPython using {} chunks of data".format(nbr_chunks)
     chunk_size = len(q) / nbr_chunks
@@ -80,14 +80,13 @@ def calc_pure_python(show_output):
 
     start_time = datetime.datetime.now()
 
-
     # tuple of all parallel python servers to connect with
     # for localhost with 0 LOCAL_CPUS run 'ppserver.py -d -a' in another terminal
 
     # create a Pool which will create Python processes
     # tuple of all parallel python servers to connect with
-    ppservers=("*",) # autodiscover on network
-    NBR_LOCAL_CPUS = 0 # if 0, it sends jobs out to other ppservers
+    ppservers = ("*",)  # autodiscover on network
+    NBR_LOCAL_CPUS = 0  # if 0, it sends jobs out to other ppservers
     # use 'ifconfig' on linux/mac to get IP addresses
     #ppservers = ('192.168.0.2',) # use this machine
 
