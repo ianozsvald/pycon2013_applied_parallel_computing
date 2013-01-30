@@ -1,4 +1,21 @@
 
+MINESH - can you confirm the following questions please?
+* Inside the VirtualBox, if you run python and do "import multiprocessing", "print multiprocessing.cpu_count()" does it say 1 or >1 cpus? On my laptop it says 8. On a default VirtualBox it might only say 1 (but you can set more CPUs in the VirtualBox configuration)
+* Can you confirm that the examples below (marked "MINESH") all run in the virtualbox? On my laptop the first (serial_python) takes 10 seconds on 1 CPU, the others will all take about the same time (in the class we use more CPUs and more work units and we get it down to 3.1s on my laptop)
+
+MINESH - to confirm that the code runs:
+start in: 1_ListOfTasks/solutions/
+run the following and confirm you get an output
+$ python serial_python.py  # will make a 2D plot with matplotlib
+$ python serial_python.py -s 300 -m 100 --plot3D  # will make a 3D surface plot (if you take out "-s 300 -m 100" you'll get a larger plot but it will take 1 minute to draw)
+$ python parallelpy.py  # will run on 1 CPU (this is expected)
+$ parallelpy_manymachines.py  # will only run if in *another terminal* you run "$ ppserver.py -d -a", this is the over-the-network version
+
+
+--------
+
+Notes for Ian:
+
 1_mandelbrot_serial
 Confirm we have a 2D plot first
 Run using:
@@ -10,6 +27,7 @@ $ python serial_python.py -s 300 -m 100 --plot3D
 2_mandelbrot_multiprocessing
 $ python multiproc.py
 confirm it runs using num_chunks=1, then increase nbr of chunks
+student to copy Ian's example to fill in the missing code
 
 3_mandelbrot_parallelpython
 $ python parallelpy.py
