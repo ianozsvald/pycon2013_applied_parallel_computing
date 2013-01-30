@@ -23,6 +23,7 @@ If you *are* using the VirtualBox image that we provide then skip to the end for
     $ python setup.py build_ext -i  # build word_cloud locally
 
 Disco needs to be checked out of the github repository, use this specific check-in "f193331965e8aac459ff9a4115cef522e357098b" by doing:
+
     $ git clone git://github.com/discoproject/disco.git  # fetch current HEAD
     $ git checkout f193331965e8aac459ff9a4115cef522e357098b  # go back in time to the version that fits this tutorial
     Now read the DISCO_INSTALL_NOTES.txt in 2_MapReduceDisco and hope you get it working (we won't provide support if you can't)
