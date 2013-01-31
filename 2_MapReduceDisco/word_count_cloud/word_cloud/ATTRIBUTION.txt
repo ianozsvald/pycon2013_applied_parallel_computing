@@ -1,0 +1,3 @@
+Taken from Andreas' repo
+https://github.com/amueller/word_cloud
+by Ian Ozsvald for PyCon 2013 tutorial - much obliged Andreas!
