@@ -116,6 +116,54 @@ $ bin/disco nodaemon # test it still runs
 assuming disco still runs, delete root_orig as it contains unhelpful testing data.
 
 
+Setting up a second machine:
+===========================
+Follow the steps above. Make sure authorized_keys are configured so you can ssh from each machine to the other without requiring a password. Copy the server's ~/.erlang.cookie to the slave machine (and set 400 permissions and chown to the logged in user, if required [see troubleshooting below if needed]).
+
+Start disco ($ bin/disco nodaemon) on the server, do not run it on the slave. It'll be auto-started on the slave. I see this on the server:
+13:48:14.991 [info] Node failed at disco_8989_slave@ubuntu on "ubuntu": {undef,[{ddfs_node,start_link,[[{nodename,"ubuntu"},{disco_root,"/home/ian/workspace/pycon2013_working/DISCO_HOME/root/data"},{ddfs_root,"/home/ian/workspace/pycon2013_working/DISCO_HOME/root/ddfs"},{get_port,8989},{put_port,8990},{get_enabled,true},{put_enabled,true}],<0.394.0>]}]}
+13:48:14.991 [error] Error in process <0.39.0> on node 'disco_8989_slave@ubuntu' with exit value: {undef,[{temp_gc,start_link,['disco_8989_master@ian-Latitude-E6420',"/home/ian/workspace/pycon2013_working/DISCO_HOME/root/data/ubuntu"]}]}
+and it runs then dies on the slave.
+
+On both machines I can see that erlang is the same:
+$ apt-cache showpkg erlang-base
+Package: erlang-base
+Versions: 
+1:14.b.4-dfsg-1ubuntu1 (/var/lib/apt/lists/gb.archive.ubuntu.com_ubuntu_dists_precise_main_binary-amd64_Packages) (/var/lib/dpkg/status)
+ Description Language: 
+...
+AHHHH it assumes that Disco is installed in the same location on each machine! When I see
+14104  8420 /usr/lib/erlang/erts-5.8.5/bin/beam.smp -K true -- -root /usr/lib/erlang -progname erl -- -home /home/ian -- -noshell -noinput -noshell -noinput -master disco_8989_master@ian-Latitude-E6420 -sname disco_8989_slave@ubuntu -s slave slave_start disco_8989_master@ian-Latitude-E6420 slave_waiter_0 -connect_all false -pa /home/ian/workspace/pycon2013_working/DISCO_HOME/master/ebin/ -pa /home/ian/workspace/pycon2013_working/DISCO_HOME/master/deps/mochiweb/ebin -pa /home/ian/workspace/pycon2013_working/DISCO_HOME/master/deps/lager/ebin -f
+on the remote machine (the slave), I can guess that /home/ian/workspace/python2013_working/DISCO_HOME does not yet exist. I move my DISCO_HOME into this directory so I have:
+slave$ pwd # /home/ian/workspace/pycon2013_working/DISCO_HOME
+and now the on master I see:
+14:04:20.461 [warning] Restarting monitor for "ubuntu"
+14:04:20.477 [info] Starting node "disco_8989_slave" on "ubuntu" ("ubuntu")
+14:04:21.024 [info] ddfs_node initialized on disco_8989_slave@ubuntu with volumes: ["vol0"]
+14:04:21.034 [info] Started ddfs_put at disco_8989_slave@ubuntu on port 8990
+14:04:21.059 [info] Started ddfs_get at disco_8989_slave@ubuntu on port 8989
+14:04:21.059 [info] Node started at disco_8989_slave@ubuntu (reporting as disco_8989_slave@ubuntu) on "ubuntu"
+14:04:21.059 [info] ddfs_node starts on disco_8989_slave@ubuntu
+14:04:21.064 [info] Tempgc: error listing "/home/ian/workspace/pycon2013_working/DISCO_HOME/root/data/ubuntu": {error,enoent}
+14:04:21.064 [info] Tempgc: one pass completed on disco_8989_slave@ubuntu
+
+Also note that on the Master I have in my /etc/hosts:
+127.0.1.1	ian-Latitude-E6420
+192.168.0.32    ubuntu
+and on my slave I have in my /etc/hosts:
+127.0.1.1	ubuntu
+192.168.0.2     ian-Latitude-E6420
+where I added the second lines manually.
+
+Also in my master, in the web config page (http://localhost:8989/config.html#) I've changed "localhost" to "ian-Latitude-E6420" and added "ubuntu", both with 1 worker.
+
+On the master I've now changed the reference to 'ian-Latitude-E6420' back to 'localhost' and everything appears good (I killed the remote slave process, disco restarted it, the logs look good).
+
+To confirm that the two machines are working I run first with the config of 1 localhost worker and 1 ubuntu (remote machine) worker using:
+$ DISCO_HOME $ python examples/util/count_words.py 
+and the job runs locally, as 2 processes. I then change the config so I have 0 localhost and 1 ubuntu and run again, this time I see that the 'ubuntu' machine appears in stdout. On the remote machine I use htop to confirm a CPU spike and I see erlang appearing in the process list as the active process.
+
+
 Troubleshooting:
 ===============
 
@@ -136,6 +184,9 @@ if this fails with:
 ssh: connect to host localhost port 22: Connection refused
 then install openssh-server, if it needs a password then setup authorized_keys
 http://discoproject.org/doc/disco/start/install.html#configure-authentication
+Note that using their notes I made an id_dsa.pub but ssh-copy-id by default looks for id_rsa.pub, so I had to use:
+$ ssh-copy-id -i ~/.ssh/id_dsa.pub <server_IP>  # ran on freshly installed slave machine
+after this I could ssh from either machine to the other without needing a password.
 
 Bad installation? I had trouble several times with incomplete installs, if you get this:
 DISCO_HOME $ bin/disco nodaemon
@@ -172,3 +223,23 @@ Eshell V5.8.5  (abort with ^G)
 18:27:32.752 [info] web server (mochiweb) starts
 18:27:32.753 [info] Application disco started on node 'disco_8989_master@ian-Latitude-E6420'
 ssh: connect to host localhost port 22: Connection refused
+
+I get this sometimes on new installations:
+$ bin/disco nodaemon
+{error_logger,{{2013,1,31},{13,19,57}},"Error when reading /home/ian/.erlang.cookie: eacces",[]}
+{error_logger,{{2013,1,31},{13,19,57}},crash_report,[[{initial_call,{auth,init,['Argument__1']}},{pid,<0.19.0>},{registered_name,[]},{error_info,{exit,{"Error when reading /home/ian/.erlang.cookie: eacces",[{auth,init_cookie,0},{auth,init,1},{gen_server,init_it,6},{proc_lib,init_p_do_apply,3}]},[{gen_server,init_it,6},{proc_lib,init_p_do_apply,3}]}},{ancestors,[net_sup,kernel_sup,<0.9.0>]},{messages,[]},{links,[<0.17.0>]},{dictionary,[]},{trap_exit,true},{status,running},{heap_size,987},{stack_size,24},{reductions,592}],[]]}
+{error_logger,{{2013,1,31},{13,19,57}},supervisor_report,[{supervisor,{local,net_sup}},{errorContext,start_error},{reason,{"Error when reading /home/ian/.erlang.cookie: eacces",[{auth,init_cookie,0},{auth,init,1},{gen_server,init_it,6},{proc_lib,init_p_do_apply,3}]}},{offender,[{pid,undefined},{name,auth},{mfargs,{auth,start_link,[]}},{restart_type,permanent},{shutdown,2000},{child_type,worker}]}]}
+{error_logger,{{2013,1,31},{13,19,57}},supervisor_report,[{supervisor,{local,kernel_sup}},{errorContext,start_error},{reason,shutdown},{offender,[{pid,undefined},{name,net_sup},{mfargs,{erl_distribution,start_link,[]}},{restart_type,permanent},{shutdown,infinity},{child_type,supervisor}]}]}
+{error_logger,{{2013,1,31},{13,19,57}},std_info,[{application,kernel},{exited,{shutdown,{kernel,start,[normal,[]]}}},{type,permanent}]}
+{"Kernel pid terminated",application_controller,"{application_start_failure,kernel,{shutdown,{kernel,start,[normal,[]]}}}"}
+
+Crash dump was written to: erl_crash.dump
+Kernel pid terminated (application_controller) ({application_start_failure,kernel,{shutdown,{kernel,start,[normal,[]]}}})
+Failed to start Master ubuntu:8989
+and the error seems to be due to the first line:
+{error_logger,{{2013,1,31},{13,19,57}},"Error when reading /home/ian/.erlang.cookie: eacces",[]}
+-r--------  1 root root     20 Jan 31 00:00 .erlang.cookie  # in /home/ian
+$ sudo chown ian ~/.erlang.cookie  # make ian (the logged in user) an owner
+$ ls ~ -la
+-r--------  1 ian  root     20 Jan 31 00:00 .erlang.cookie
+and now it will start correctly
