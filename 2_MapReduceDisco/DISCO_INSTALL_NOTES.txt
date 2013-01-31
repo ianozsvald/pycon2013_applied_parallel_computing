@@ -7,6 +7,7 @@ http://discoproject.org/doc/disco/start/install.html#configauth
 sudo apt-get install erlang-base (not erlang-base-hipe)
 sudo apt-get install erlang (this depends on erlang-base OR erlange-base-hipe so do it after installing erlang-base)
 git clone git://github.com/discoproject/disco.git DISCO_HOME
+git checkout f193331965e8aac459ff9a4115cef522e357098b  # go back in time to a version that we know works
 cd DISCO_HOME
 make
 NOTE we don't want a 'make install' as we're not making this installation global (it requires more fiddling with config)
