@@ -19,8 +19,12 @@ If you are *not* using the PyCon VirtualBox image that we provide for PyCon 2013
 If you *are* using the VirtualBox image that we provide then skip to the end for `run_this_to_confirm_you_have_the_correct_libraries.py and confirm that everything is configured as we expect.
 
     $ pip install -r requirements.txt  # install dependencies
+
+Building the world-cloud viewer (from https://github.com/amueller/word_cloud/ - thanks Andreas):
     $ cd 2_MapReduceDisco/word_count_cloud/word_cloud
     $ python setup.py build_ext -i  # build word_cloud locally
+    $ mv word_cloud/query_integral_image.so .  # not sure why it is put into word_cloud, it needs to be in . to be visible
+    $ $ python wordcloud.py  # test that the wordcloud library runs, it should make a small PIL image based on constitution.txt
 
 Disco needs to be checked out of the github repository, use this specific check-in "f193331965e8aac459ff9a4115cef522e357098b" by doing:
 
