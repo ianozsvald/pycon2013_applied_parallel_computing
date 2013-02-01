@@ -1,7 +1,7 @@
 PyCon 2013 Applied Parallel Computing
 =====================================
 
-Applied Parallel Computing tutorial material for PyCon 2013 (Minesh Amin, Ian Ozsvald)
+Applied Parallel Computing tutorial material for PyCon 2013 (Minesh B. Amin, Ian Ozsvald)
 https://us.pycon.org/2013/schedule/presentation/27/
 
 This tutorial covers:
@@ -21,16 +21,16 @@ If you *are* using the VirtualBox image that we provide then skip to the end for
     $ pip install -r requirements.txt  # install dependencies
 
 Building the world-cloud viewer (from https://github.com/amueller/word_cloud/ - thanks Andreas):
+
     $ cd 2_MapReduceDisco/word_count_cloud/word_cloud
     $ python setup.py build_ext -i  # build word_cloud locally
     $ mv word_cloud/query_integral_image.so .  # not sure why it is put into word_cloud, it needs to be in . to be visible
-    $ $ python wordcloud.py  # test that the wordcloud library runs, it should make a small PIL image based on constitution.txt
+    $ python wordcloud.py  # test that the wordcloud library runs, it should make a small PIL image based on constitution.txt
 
 Disco needs to be checked out of the github repository, use this specific check-in "f193331965e8aac459ff9a4115cef522e357098b" by doing:
 
     $ git clone git://github.com/discoproject/disco.git  # fetch current HEAD
     $ git checkout f193331965e8aac459ff9a4115cef522e357098b  # go back in time to the version that fits this tutorial
-    Now read the DISCO_INSTALL_NOTES.txt in 2_MapReduceDisco and hope you get it working (we won't provide support if you can't)
 
 DISCO_HOME should have been configured if you followed DISCO_INSTALL_NOTES.txt, you will have done something like:
 
@@ -44,7 +44,11 @@ You can test that DISCO is setup correctly by running:
 
     $ discocli.py client_version  # should report "0.4.4" 
 
+Now read the DISCO_INSTALL_NOTES.txt in 2_MapReduceDisco and hope you get it working (we won't provide support if you can't).
+
 Confirm that you have all the required libraries:
+=======
+Finally, confirm that you have all the required libraries:
 
     $ python run_this_to_confirm_you_have_the_correct_libraries.py
 
