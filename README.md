@@ -32,6 +32,18 @@ Disco needs to be checked out of the github repository, use this specific check-
     $ git checkout f193331965e8aac459ff9a4115cef522e357098b  # go back in time to the version that fits this tutorial
     Now read the DISCO_INSTALL_NOTES.txt in 2_MapReduceDisco and hope you get it working (we won't provide support if you can't)
 
+DISCO_HOME should have been configured if you followed DISCO_INSTALL_NOTES.txt, you will have done something like:
+
+    $ export DISCO_HOME=~/workspace/DISCO_HOME  # where ~/workspace/DISCO_HOME is the git directory you checked out
+
+DISCO has some binaries that are convenient to access from the command line, adding the DISCO bin directory to your search path is easiest e.g.
+
+    $ export PATH=$PATH:$DISCO_HOME/bin  # putting this in ~/.bashrc would be better
+
+You can test that DISCO is setup correctly by running:
+
+    $ discocli.py client_version  # should report "0.4.4" 
+
 Confirm that you have all the required libraries:
 
     $ python run_this_to_confirm_you_have_the_correct_libraries.py
