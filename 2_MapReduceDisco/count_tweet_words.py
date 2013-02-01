@@ -9,7 +9,7 @@ OUTPUT_FILENAME = "mapreduceout_wordcount.json"
 
 
 def get_username_tweet(line):
-    """Extract username and tweet from csv-encoded line"""
+    """Extract username and tweet from json-encoded line"""
     j = json.loads(line)
     username = j['username']
     tweet = j['tweet']
@@ -20,8 +20,7 @@ def get_username_tweet(line):
 def map(line, params):
     tweeter, tweet = count_tweet_words.get_username_tweet(line)
     # return each word in the tweet (to count frequency of each term)
-    for word in tweet.split():
-        yield word, 1
+    # STUDENT TO DO
 
 
 def reduce(iter, params):
@@ -31,9 +30,8 @@ def reduce(iter, params):
 
 
 if __name__ == '__main__':
-    #input_filename = "./tweet_data/tweets_357.json"
-    input_filename = "./tweet_data/tweets_859157.json"
-    #input_filename = "/media/3TBStorage/tweets_all.json"
+    input_filename = "./tweet_data/tweets_357.json"
+    #input_filename = "./tweet_data/tweets_859157.json"
 
     # we need a fully qualified file name for the server
     fully_qualified_path = os.path.realpath(input_filename)
