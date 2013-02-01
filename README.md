@@ -1,7 +1,7 @@
 PyCon 2013 Applied Parallel Computing
 =====================================
 
-Applied Parallel Computing tutorial material for PyCon 2013 (Minesh Amin, Ian Ozsvald)
+Applied Parallel Computing tutorial material for PyCon 2013 (Minesh B. Amin, Ian Ozsvald)
 https://us.pycon.org/2013/schedule/presentation/27/
 
 This tutorial covers:
@@ -25,7 +25,7 @@ Building the world-cloud viewer (from https://github.com/amueller/word_cloud/ - 
     $ cd 2_MapReduceDisco/word_count_cloud/word_cloud
     $ python setup.py build_ext -i  # build word_cloud locally
     $ mv word_cloud/query_integral_image.so .  # not sure why it is put into word_cloud, it needs to be in . to be visible
-    $ $ python wordcloud.py  # test that the wordcloud library runs, it should make a small PIL image based on constitution.txt
+    $ python wordcloud.py  # test that the wordcloud library runs, it should make a small PIL image based on constitution.txt
 
 Disco needs to be checked out of the github repository, use this specific check-in "f193331965e8aac459ff9a4115cef522e357098b" by doing:
 

@@ -17,7 +17,7 @@ try:
     nbr_cpus = multiprocessing.cpu_count()
     print "Multiprocessing reports that you have {} CPUs".format(nbr_cpus)
     if nbr_cpus == 1:
-        print "Note that we expect 2 or more CPUs, you only have 1, you won't see any benefit from running the code in parallel if you only have 1 CPU"
+        print "Note that we expect 2 or more CPUs; you won't see any benefit from running the code in parallel if you only have 1 CPU"
     else:
         print "Since you have >1 CPU you will be able to observe speed-ups when we run tasks in parallel"
 
