@@ -4,14 +4,80 @@ Files:
 tweet_data/tweets_357.json  # 357 tweets from one user - tiny dataset
 tweet_data/tweets_859157.json  # 859157 tweets - 2 minute dataset
 
-In this directory run:
-$ python count_tweet_words.py
-and it'll start by loading tweets_357.json (line 34).
+SETUP:
 
-This will produce mapreduceout_wordcount.json.
+First make sure we have disco running, using your previous install just run it like you did last time:
+DISCO_HOME $ bin/disco nodaemon
+and it'll run in that shell. Visit
+http://localhost:8989/
+to confirm that you get the management shell.
 
-Do:
-$ cd word_count
-and then we'll run:
-word_count_cloud $ python plot_from_mapreduce.py ../mapreduceout_wordcount.json
+If you haven't seen my updates to the ./README.md file, it has extra notes on configuring Disco (so that you can run the 'disco' and 'ddfs' commands from anywhere on the system) - you should follow these instructions now.
+
+Copy the solutions/* files into our 2_MapReduceDisco directory, so:
+2_MapReduceDisco $ cp solutions/*.py .
+and we'll have our insturctor versions in this directory for testing.
+
+First we'll use the tiny data set (357 tweets) with a direct input:
+2_MapReduceDisco $ python count_tweet_words_1.py
+this will read from tweets_357.json and produce a small output file:
+mapreduceout_wordcount.json
+which will be 35591 bytes.
+
+To visualise (to confirm our visualiser is working) do:
+$ 2_MapReduceDisco $ python word_count_cloud/plot_from_mapreduce.py mapreduceout_wordcount.json
+and the mapreduceout_wordcount.json we just generated will be drawn as a wordcloud.
+
+Now we'll do the same with the larger dataset
+2_MapReduceDisco $ python count_tweet_words_2.py  # uses 859157 tweets
+NOTE this version might eat too much RAM! On my machine it takes 1.9GB just for the python process and 4 minutes - this might kill your VirtualBox, if so I need to know if it kills it so I can integrate this into my talk.
+
+IF the VirtualBox crashes, it is fine to jump this step and the next (_3) step and go to the fourth.
+
+If this succeeds then you'll have a new mapreduceout_wordcount.json which is 24267799 bytes. You can do the same visualisation call again if you're curious to see a wordcloud of a represenative sample of nearly a million tweets.
+
+We can avoid the large memory usage with a small change (but I'd like to know if _2 causes a problem in the VirtualBox), run:
+2_MapReduceDisco $ python count_tweet_words_3.py
+and you'll get the same mapreduceout_wordcount.json but very quickly (<1 minute for me).
+
+Now we'll configure the distributed filing system (but still just on our one machine):
+2_MapReduceDisco $ cd tweet_data/
+tweet_data $ split -l 100000 tweets_859157.json  # split our file into 100k line chunks
+tweet_data $ ls -la
+total 220236
+drwxr-xr-x 2 ian ian      4096 Feb  1 18:50 .
+drwxr-xr-x 5 ian ian      4096 Feb  1 18:48 ..
+-rw-r--r-- 1 ian ian     48554 Jan 23 23:48 tweets_357.json
+-rw-r--r-- 1 ian ian 112680026 Jan 23 23:48 tweets_859157.json
+-rw-r--r-- 1 ian ian  13001635 Feb  1 18:50 xaa
+-rw-r--r-- 1 ian ian  13147894 Feb  1 18:50 xab
+-rw-r--r-- 1 ian ian  13409435 Feb  1 18:50 xac
+-rw-r--r-- 1 ian ian  13299021 Feb  1 18:50 xad
+-rw-r--r-- 1 ian ian  13003206 Feb  1 18:50 xae
+-rw-r--r-- 1 ian ian  13572725 Feb  1 18:50 xaf
+-rw-r--r-- 1 ian ian  12752620 Feb  1 18:50 xag
+-rw-r--r-- 1 ian ian  12921049 Feb  1 18:50 xah
+-rw-r--r-- 1 ian ian   7572441 Feb  1 18:50 xai
+I show the above so you can confirm that you have xaa-xai, roughly 100k lines each from the 859157 line file.
+
+Now we use ddfs (disco distributed file system) to take our files and spread them across our machines:
+tweet_data $ ddfs chunk data:tweets859157xa ./xa?
+created: disco://ian-Latitude-E6420/ddfs/vol0/blob/11/xaa-0$54f-b5d3e-110fe
+created: disco://ian-Latitude-E6420/ddfs/vol0/blob/5c/xab-0$54f-b5d3e-a0df3
+created: disco://ubuntu/ddfs/vol0/blob/ad/xac-0$54f-b5d3f-514d3
+created: disco://ubuntu/ddfs/vol0/blob/1c/xad-0$54f-b5d42-c3af8
+created: disco://ubuntu/ddfs/vol0/blob/46/xae-0$54f-b5d49-b19ec
+created: disco://ian-Latitude-E6420/ddfs/vol0/blob/6a/xaf-0$54f-b5d4d-3508c
+created: disco://ubuntu/ddfs/vol0/blob/fa/xag-0$54f-b5d4d-cc242
+created: disco://ubuntu/ddfs/vol0/blob/6a/xah-0$54f-b5d51-3dc9a
+created: disco://ubuntu/ddfs/vol0/blob/50/xai-0$54f-b5d54-6e518
+the actual output you get will vary (different machine name & blog ids), here I'm using two computers (for my testing) and you'll only use the VirtualBox.
+
+Now go up a directory and run the 3rd file, this will do the same job as the 2nd but using the ddfs data rather than 1 flat file:
+2_MapReduceDisco $ python count_tweet_words_4.py
+This is using the memory fix and the ddfs data (so this version could run on >1 machine).
+
+Finall run:
+2_MapReduceDisco $ python count_tweet_words_5.py
+which will run faster - here we filter for just tweets with the word "samsung". Visualise the result and you'll get a different wordcloud than before.
 
