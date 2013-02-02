@@ -119,6 +119,7 @@ pkgBasic()
             erlang              \
             \
             mongodb             \
+            redis-server        \
             ; do                
 	    echo "#${tab}${pkg} " ;
 	    sudo apt-get install  \
