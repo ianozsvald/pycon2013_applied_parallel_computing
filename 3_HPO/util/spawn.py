@@ -5,6 +5,8 @@ from env import portID, \
                 tmpRel;
 
 def main(nworkers = 4):
+    import os as py_os;
+
     print '    # Info: Enforcing assumptions ...';
     __assert    (nworkers);
     print '    # Info: About to terminate existing daemons ...';    
@@ -18,7 +20,7 @@ def main(nworkers = 4):
     print '    # Info: About to launch workers ...';
     for nworkers in range(0, nworkers):
         __launch(file = '/usr/bin/python',
-                 args = ('/home/pycon/spm.hpo/hyperopt/scripts/hyperopt-mongo-worker',
+                 args = ('%(parent)s/../../usr/hyperopt/scripts/hyperopt-mongo-worker' % dict(parent = py_os.path.dirname(__file__)),
                          '--mongo=localhost:22334/demoDB',
                          '--poll-interval=0.1',
                          ));
@@ -77,8 +79,8 @@ def __launch(file, args):
         if (pid > 0):
             (pid_, stat_) = py_os.waitpid(pid, 0);
             if ((pid != pid_) or 
-                (not py_os.WIFEXITED  (stat_)) or 
-                (py_os.WEXITSTATUS(stat_) != 0)):
+                (not py_os.WIFEXITED  (stat_))):
+                print 'status ->', py_os.WEXITSTATUS(stat_);
                 raise OSError("**");
             return;
     except OSError, e:

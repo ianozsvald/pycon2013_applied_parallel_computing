@@ -95,7 +95,7 @@ EOF
 
 pkgBasic()
 {
-    echo "# Info: Installing required packages ...";
+    echo "# Info: Installing basic packages ...";
     (
 	for pkg in              \
 	    git                 \
@@ -108,6 +108,7 @@ pkgBasic()
             \
   	    python-dev          \
 	    python-pip          \
+            python-psutil       \
             python-dateutil     \
             python-numpy        \
             cython              \
@@ -116,6 +117,8 @@ pkgBasic()
             \
             erlang-base         \
             erlang              \
+            \
+            mongodb             \
             ; do                
 	    echo "#${tab}${pkg} " ;
 	    sudo apt-get install  \
@@ -157,9 +160,10 @@ pkgBasic()
 
 # ---------------------------------------------------------------------------
 
-pkgDISCO ()
+pkgRequired ()
 {
     ./usr/DISCO_HOME.setup.sh;
+    ./usr/hyperopt.setup.sh;
 }
 
 # ---------------------------------------------------------------------------
@@ -180,11 +184,11 @@ pkgDemo ()
 
 # ---------------------------------------------------------------------------
 
-checkBasic;
-pkgBasic  ;
-checkSSH  ; # Must be after 'expect' is installed (!)
-pkgDISCO  ;
-pkgDemo   ;
+checkBasic  ;
+pkgBasic    ;
+checkSSH    ; # Must be after 'expect' is installed (!)
+pkgRequired ;
+pkgDemo     ;
 
 # ---------------------------------------------------------------------------
 

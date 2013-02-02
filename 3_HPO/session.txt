@@ -1,28 +1,27 @@
-mint[] python
-Python 2.7.3 (default, Sep 26 2012, 21:53:58) 
-[GCC 4.7.2] on linux2
-Type "help", "copyright", "credits" or "license" for more information.
->>> import searchRandom
+python ./searchRandom.py 
     # Info: Enforcing assumptions ...
     # Info: About to terminate existing daemons ...
     # Info: About to launch mongod daemon ...
     # Info: About to launch workers ...
     # Info: Enforcing assumptions ...
     # Info: About to terminate existing daemons ...
-    # Info: About to kill mongod (pid=3919)
-    # Info: About to kill mongod (pid=3923)
-    # Info: About to kill mongod (pid=3930)
-    # Info: About to kill mongod (pid=3936)
-    # Info: About to kill mongod (pid=3942)
+    # Info: About to kill mongod (pid=1662)
+    # Info: About to kill mongod (pid=1677)
+    # Info: About to kill mongod (pid=1680)
+    # Info: About to kill mongod (pid=1688)
+    # Info: About to kill mongod (pid=1698)
     # Info: About to launch mongod daemon ...
     # Info: About to launch workers ...
-No handlers could be found for logger "hyperopt.fmin"
 {u'x': -1.4925596875020672}
-    # Info: About to kill mongod (pid=3969)
-    # Info: About to kill mongod (pid=3973)
-    # Info: About to kill mongod (pid=3980)
-    # Info: About to kill mongod (pid=3982)
-    # Info: About to kill mongod (pid=3984)
+    # Info: About to kill mongod (pid=1727)
+    # Info: About to kill mongod (pid=1738)
+    # Info: About to kill mongod (pid=1742)
+    # Info: About to kill mongod (pid=1744)
+    # Info: About to kill mongod (pid=1752)
+    # Info: About to kill mongod (pid=1955)
+    # Info: About to kill mongod (pid=1961)
+    # Info: About to kill mongod (pid=1967)
+    # Info: About to kill mongod (pid=1973)
 
 #
 # ------------------------------------------------------------------
