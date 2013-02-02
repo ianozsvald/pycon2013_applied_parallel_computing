@@ -121,6 +121,8 @@ pkgBasic()
             \
             mongodb             \
             redis-server        \
+            graphviz            \
+            python-pygraphviz   \
             ; do                
 	    echo "#${tab}${pkg} " ;
 	    sudo apt-get install  \
