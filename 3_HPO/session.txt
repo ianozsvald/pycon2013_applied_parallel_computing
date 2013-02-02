@@ -23,12 +23,34 @@ No handlers could be found for logger "hyperopt.fmin"
     # Info: About to kill mongod (pid=3980)
     # Info: About to kill mongod (pid=3982)
     # Info: About to kill mongod (pid=3984)
->>> import searchGrid
+
+#
+# ------------------------------------------------------------------
+# ------------------------------------------------------------------
+#
+
+python ./searchGrid.py 
 None
 Loading 20 newsgroups dataset for categories:
 ['alt.atheism', 'talk.religion.misc']
 857 documents
 2 categories
 
->>> exit()
-mint[] 
+Performing grid search...
+pipeline: ['vect', 'tfidf', 'clf']
+parameters:
+{'clf__alpha': (1e-05, 1e-06),
+ 'clf__penalty': ('l2', 'elasticnet'),
+ 'vect__max_df': (0.5, 0.75, 1.0),
+ 'vect__max_n': (1, 2)}
+[Parallel(n_jobs=-1)]: Done   1 jobs       | elapsed:    1.8s
+[Parallel(n_jobs=-1)]: Done  50 jobs       | elapsed:   35.8s
+[Parallel(n_jobs=-1)]: Done  72 out of  72 | elapsed:   55.4s finished
+done in 62.366s
+
+Best score: 0.935
+Best parameters set:
+	clf__alpha: 1e-05
+	clf__penalty: 'l2'
+	vect__max_df: 0.5
+	vect__max_n: 2
