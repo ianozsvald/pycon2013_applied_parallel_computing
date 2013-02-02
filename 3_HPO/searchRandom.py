@@ -1,12 +1,11 @@
-from math              import sin;
-from hyperopt          import fmin, tpe, hp;
-from hyperopt.mongoexp import MongoTrials;
-from env               import portID, \
-                              urlRel;
+from   math              import sin;
+from   hyperopt          import fmin, tpe, hp;
+from   hyperopt.mongoexp import MongoTrials;
+from   util.env          import portID, \
+                                urlRel;
+import util.spawn as            spawn;
 
-import myMongod;
-
-myMongod.main(nworkers = 4);
+spawn.main(nworkers = 4);
 
 trials = MongoTrials('mongo://localhost:%(portID)d%(urlRel)s' % vars(),
                      exp_key   = 'exp1');
@@ -18,6 +17,6 @@ best   = fmin       (sin,
 
 print best;
 
-myMongod.terminate();
+spawn.terminate();
 
 
