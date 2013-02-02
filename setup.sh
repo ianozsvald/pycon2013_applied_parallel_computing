@@ -1,5 +1,7 @@
 #!/bin/sh
 
+tab="          ";
+
 sudo -n pwd > /dev/null 2>&1;
 if [ $? != 0 ]; then
    echo "#";
@@ -13,11 +15,14 @@ fi;
 
 echo "# Info: Installing required packages ...";
 (
-  tab="          ";
   for pkg in git                 \
+             openssh-server      \
+             expect              \
+                                 \
              libblas-dev         \
   	     liblapack-dev       \
     	     gfortran            \
+                                 \
   	     python-dev          \
 	     python-pip          \
              python-dateutil     \
@@ -25,12 +30,11 @@ echo "# Info: Installing required packages ...";
              cython              \
              python-scipy        \
              python-sklearn      \
+                                 \
+             erlang-base         \
+             erlang              \
              ; do                
      echo "#${tab}${pkg} " ;
-     sudo rm -rf /dev/shm/[Pp]illow* \
-                                    \
-                                 && \
-                                    \
      sudo apt-get install           \
             -y ${pkg}               \
             >/dev/null 2>&1;
@@ -40,15 +44,47 @@ echo "# Info: Installing required packages ...";
      fi;
   done;                  
 
-  echo "#${tab}pillow" ;
-  sudo pip install       \
-        -d /dev/shm      \
-           pillow        \
-        >  /dev/null 2>&1;
+  for pkg in pillow \
+             pp     \
+             ; do 
+     (cd /dev/shm ; ls -1 | grep -i ${pkg} | xargs -n 1 sudo rm -rf) > /dev/null 2>&1;
+     echo "#${tab}${pkg}" ;
+     sudo pip install        \
+            -b /dev/shm      \
+               ${pkg}        \
+            >  /dev/null 2>&1;
+     stat=$?;
 
-  if [ $? != 0 ]; then 
-     exit 1;
-  fi;
+     (cd /dev/shm ; ls -1 | grep -i ${pkg} | xargs -n 1 sudo rm -rf) > /dev/null 2>&1;
+     if [ ${stat} != 0 ]; then 
+        exit 1;
+     fi;
+  done;
+
+  exit 0;
+);
+
+if [ $? != 0 ]; then
+   echo "#";
+   echo "# Error: Could not install packages. Am quitting.";
+   echo "#";
+   exit 1;
+fi;
+
+echo "# Info: DISCO package";
+(  
+  mkdir -p ./usr                                               && \
+  cd       ./usr                                               && \
+  sudo rm -rf                                     ./DISCO_HOME && \
+  echo "#${tab}Downloading ..."                                && \
+  git clone git://github.com/discoproject/disco.git DISCO_HOME >/dev/null 2>&1 && \
+  cd                                                DISCO_HOME && \
+  git checkout f193331965e8aac459ff9a4115cef522e357098b        >/dev/null 2>&1 && \
+  echo "#${tab}Compling ..."                                   && \
+  make                                                         >/dev/null 2>&1 && \
+  cd lib                                                       && \
+  echo "#${tab}Installing ..."                                 && \
+  sudo python ./setup.py install                               >/dev/null 2>&1 ;
 );
 
 if [ $? != 0 ]; then

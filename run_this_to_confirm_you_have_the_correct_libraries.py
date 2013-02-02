@@ -7,8 +7,8 @@
 # either missing libraries or your libraries are of the wrong version
 
 EXPECTED_PP_VERSION = "1.6.3"
-EXPECTED_MATPLOTLIB_VERSION = "1.1.1rc"
-EXPECTED_NUMPY_VERSION = "1.6.1"
+EXPECTED_MATPLOTLIB_VERSION = ("1.1.1", "1.1.1rc")
+EXPECTED_NUMPY_VERSION = ("1.6.1", "1.6.2")
 
 libraries_missing_or_wrong_version = False
 
@@ -40,7 +40,7 @@ except ImportError as err:
 try:
     import numpy
     numpy_version = numpy.__version__
-    if numpy_version != EXPECTED_NUMPY_VERSION:
+    if numpy_version not in EXPECTED_NUMPY_VERSION:
         print "You don't have the expected version of numpy"
         print "We're expecting you to have {} and you have {}".format(EXPECTED_NUMPY_VERSION, numpy_version)
         print "If your version is newer or similar then you're probably ok, if it is much older then you should upgrade via: http://scipy.org/Download"
@@ -52,7 +52,7 @@ except ImportError as err:
 try:
     import matplotlib
     matplotlib_version = matplotlib.__version__
-    if matplotlib_version != EXPECTED_MATPLOTLIB_VERSION:
+    if matplotlib_version not in EXPECTED_MATPLOTLIB_VERSION:
         print "You have a different version {} of matplotlib than the {} that we expect".format(matplotlib_version, EXPECTED_MATPLOTLIB_VERSION)
         print "If your version is similar or newer (or at least better than 1.0.0) then you are probably ok"
         print "You can upgrade or check the latest version here: http://matplotlib.org/downloads.html"
