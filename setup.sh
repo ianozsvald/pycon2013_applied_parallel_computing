@@ -12,26 +12,44 @@ if [ $? != 0 ]; then
 fi;
 
 echo "# Info: Installing required packages ...";
-sudo apt-get install -y     \
-        libblas-dev         \
-	liblapack-dev       \
-	gfortran            \
-	python-dev          \
-	python-pip          \
-                            \
-        &&                  \
-                            \
-sudo pip install            \
-        -b /dev/shm         \
-        -r requirements.txt \
-                            \
-        &&                  \
-                            \
-sudo apt-get install -y     \
-	python-scipy        \
-                            \
-        > /dev/null 2>&1;
-	;
+(
+  tab="          ";
+  for pkg in git                 \
+             libblas-dev         \
+  	     liblapack-dev       \
+    	     gfortran            \
+  	     python-dev          \
+	     python-pip          \
+             python-dateutil     \
+             python-numpy        \
+             cython              \
+             python-scipy        \
+             python-sklearn      \
+             ; do                
+     echo "#${tab}${pkg} " ;
+     sudo rm -rf /dev/shm/[Pp]illow* \
+                                    \
+                                 && \
+                                    \
+     sudo apt-get install           \
+            -y ${pkg}               \
+            >/dev/null 2>&1;
+
+     if [ $? != 0 ]; then 
+        exit 1;
+     fi;
+  done;                  
+
+  echo "#${tab}pillow" ;
+  sudo pip install       \
+        -d /dev/shm      \
+           pillow        \
+        >  /dev/null 2>&1;
+
+  if [ $? != 0 ]; then 
+     exit 1;
+  fi;
+);
 
 if [ $? != 0 ]; then
    echo "#";
