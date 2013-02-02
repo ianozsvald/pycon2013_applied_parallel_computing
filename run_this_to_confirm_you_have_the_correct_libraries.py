@@ -9,6 +9,7 @@
 EXPECTED_PP_VERSION = "1.6.3"
 EXPECTED_MATPLOTLIB_VERSION = ("1.1.1", "1.1.1rc")
 EXPECTED_NUMPY_VERSION = ("1.6.1", "1.6.2")
+EXPECTED_NETWORKX_VERSION = ("1.7",)
 
 libraries_missing_or_wrong_version = False
 
@@ -65,6 +66,18 @@ try:
     import disco
 except ImportError as err:
     print "You are missing 'disco', install it using the instructions in the README.md file in this directory"
+    libraries_missing_or_wrong_version = True
+
+try:
+    import networkx
+    network_version = networkx.__version__
+    if network_version not in EXPECTED_NETWORKX_VERSION:
+        print "You have a different version {} of networkx than the {} that we expect".format(network_version, EXPECTED_NETWORKX_VERSION)
+        print "If your version is similar or newer then you are probably ok"
+        print "You can upgrade or check the latest version here: http://networkx.github.com/"
+        libraries_missing_or_wrong_version = True
+except ImportError as err:
+    print "You are missing 'networks', install it via http://networkx.github.com/ or 'pip install networkx'"
     libraries_missing_or_wrong_version = True
 
 

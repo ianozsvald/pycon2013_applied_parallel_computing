@@ -77,7 +77,11 @@ Now go up a directory and run the 3rd file, this will do the same job as the 2nd
 2_MapReduceDisco $ python count_tweet_words_4.py
 This is using the memory fix and the ddfs data (so this version could run on >1 machine).
 
-Finall run:
+run:
 2_MapReduceDisco $ python count_tweet_words_5.py
 which will run faster - here we filter for just tweets with the word "samsung". Visualise the result and you'll get a different wordcloud than before.
 
+2_MapReduceDisco $ python count_tweet_words_6.py
+which will generate an interactions list - who on Twitter talks to who, this will generate a mapreduceout_words.json file with different contents to the other runs. To visualise use:
+2_MapReduceDisco $ python draw_interactions_graph.py
+and you'll have a simple network connectivity diagram for popular Twitter users.
