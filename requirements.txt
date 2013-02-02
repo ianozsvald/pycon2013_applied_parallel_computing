@@ -4,3 +4,6 @@ Cython==0.17.3
 numpy==1.6.2
 scipy==0.11.0
 scikit_learn==0.12.1
+networkx==1.7
+matplotlib==1.1.1rc
+hotqueue==0.2.7
