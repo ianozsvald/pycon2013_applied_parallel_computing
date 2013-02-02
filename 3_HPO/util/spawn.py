@@ -116,6 +116,3 @@ def __launch(file, args):
 
     py_os.execl(file, file, *args);
     exit       (0);
-
-main();
-
