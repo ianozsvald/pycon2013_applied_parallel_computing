@@ -111,6 +111,7 @@ pkgBasic()
             python-psutil       \
             python-dateutil     \
             python-numpy        \
+            python-matplotlib   \
             cython              \
             python-scipy        \
             python-sklearn      \
@@ -133,6 +134,7 @@ pkgBasic()
 	for pkg in \
 	    pillow \
             pp     \
+            hotqueue \
             ; do 
 	    (cd /dev/shm ; ls -1 | grep -i ${pkg} | xargs -n 1 sudo rm -rf) > /dev/null 2>&1;
 	    echo "#${tab}${pkg}" ;
