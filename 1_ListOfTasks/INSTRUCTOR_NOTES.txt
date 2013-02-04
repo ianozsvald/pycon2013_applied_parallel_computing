@@ -38,3 +38,7 @@ and in another terminal run:
 $ ppserver.py -d -a
 so we have autodiscovery enabled
 
+$ python hotq.py --server
+will post 10 jobs to Redis, in other terminals run
+$ python hotq.py
+and each will consume until the jobs run out
