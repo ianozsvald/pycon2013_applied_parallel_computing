@@ -59,12 +59,12 @@ def calc_pure_python(show_output):
         for xcoord in x:
             q.append(complex(xcoord, ycoord))
 
-    print "Total elements:", len(q)
     start_time = datetime.datetime.now()
     output = calculate_z(q, maxiter)
     end_time = datetime.datetime.now()
     secs = end_time - start_time
     print "Main took", secs
+    print "Total elements:", len(q)
 
     validation_sum = sum(output)
     print "Total sum of elements (for validation):", validation_sum
