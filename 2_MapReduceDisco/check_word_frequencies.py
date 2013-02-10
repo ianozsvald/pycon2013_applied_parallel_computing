@@ -14,6 +14,8 @@ if __name__ == "__main__":
     pairs = [json.loads(s) for s in lines]
     # sort by second item (frequency), reverse so most frequent comes first
     pairs.sort(key=lambda item: item[1], reverse=True)
+    print "Most common words:"
+    print pairs[:10]
 
     frequencies = [item[1] for item in pairs]
     plt.loglog(frequencies)
