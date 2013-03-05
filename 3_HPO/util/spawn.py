@@ -98,7 +98,7 @@ def __launch(file, args):
         py_os.dup2(nopRD.fileno(),         py_sys.stdin .fileno());
         py_os.dup2(nopWR.fileno(),         py_sys.stdout.fileno());
         py_os.dup2(py_sys.stdout.fileno(), py_sys.stderr.fileno());
-        for fd in (3, 1024):
+        for fd in range(3, 1024):
             try:
                 py_os.close(fd);
             except:
