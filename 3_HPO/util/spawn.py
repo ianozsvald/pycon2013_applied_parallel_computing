@@ -41,13 +41,22 @@ def __assert(nworkers):
         
 def terminate():
     """
-    Kill any process that has '__PYCON2013_DEMO3_PROCESS__' defined in its environ;
+    + Remove mongo db under '/tmp';
+    + Kill any process that has '__PYCON2013_DEMO3_PROCESS__' defined in its environ;
     """
     import psutil   as py_psutil;
     import glob     as py_glob;
     import os       as py_os;
     import commands as py_commands;
 
+    # Remove db ...
+    for f in py_glob.glob('/tmp/demoDB*'):
+        try:
+            py_os.unlink(f);
+        except:
+            continue;
+
+    # Remove stale processes ...
     for proc in py_psutil.get_process_list():
         try:
             if (proc.name not in ('python', 'mongod')):
